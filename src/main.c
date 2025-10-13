@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
 #define INFINITY 9999
 #define MAX 50
@@ -34,19 +36,24 @@ void liberar_matriz() {
     free(matriz);
 }
 
-int** leer_entrada(const char *file){
+int** leer_entrada(const char *file, bool es_dirigido){
     char buffer[100];
     char arista;
     FILE *f = fopen(file, "r");
 
     if (f == NULL){
         perror("Error al abrir el archivo.\n");
+        return NULL;
     }
 
     if (fscanf(f, "%d", &vertices) != 1 || vertices <= 0){
         printf("Error, numero de vertices invalido.\n");
         fclose(f);
+        return NULL;
     }
+
+    int c;
+    while ((c = fgetc(f)) != '\n' && c != EOF);
 
     inicializar_matriz();
 
@@ -56,7 +63,9 @@ int** leer_entrada(const char *file){
             int i = u - 'a';
             int j = v - 'a';
             matriz[i][j] = 1;
-            matriz[j][i] = 1;
+            if (!es_dirigido){
+                matriz[j][i] = 1;
+            }
         }
     }
 
@@ -66,7 +75,8 @@ int** leer_entrada(const char *file){
 
 void dijkstra_alg(int** adjacency_matrix, int n, int start_node, int end_node){
     int cost[MAX][MAX], distance[MAX], pred[MAX];
-    int visited[MAX], count, mindistance, nextnode, i, j;
+    int visited[MAX], count, mindistance, i, j;
+    int nextnode = -1;
 
     for (i = 0; i < n; i++){
         for (j = 0; j < n; j++){
@@ -90,11 +100,16 @@ void dijkstra_alg(int** adjacency_matrix, int n, int start_node, int end_node){
 
     while (count < n-1){
         mindistance = INFINITY;
+        nextnode = -1;
         for (i = 0; i < n; i++){
             if (distance[i] < mindistance && !visited[i]){
                 mindistance = distance[i];
                 nextnode = i;
             }
+        }
+
+        if (nextnode == -1){
+            break;
         }
 
         visited[nextnode] = 1;
@@ -113,40 +128,61 @@ void dijkstra_alg(int** adjacency_matrix, int n, int start_node, int end_node){
         printf("\nNo hay camino posible entre %c y %c.\n", 'a' + start_node, 'a' + end_node);
     } else {
         printf("\nDistancia de %c a %c: %d\n", 'a' + start_node, 'a' + end_node, distance[end_node]);
-        printf("Camino: %c", 'a' + end_node);
+
+        int path[MAX];
+        int path_index = 0;
         j = end_node;
-        while (j != start_node) {
+
+        while (j != start_node){
+            path[path_index] = j;
+            path_index++;
             j = pred[j];
-            printf(" -> %c", 'a' + j);
+        }
+        path[path_index] = start_node;
+
+        printf("Camino: ");
+        for (i = path_index; i >= 0; i--) {
+            printf("%c", 'a' + path[i]);
+            if (i > 0) {
+                printf(" -> ");
+            }
         }
         printf("\n");
     }
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 4) {
-        printf("Uso: %s nodo_inicial nodo_final\n", argv[0]);
+    if (argc < 5) {
+        printf("Uso: %s nodo_inicial nodo_final archivo_grafo [dirigido|no_dirigido]\n", argv[0]);
         return 1;
     }
 
     char nodo_inicial = argv[1][0];
     char nodo_final = argv[2][0];
     char* graph = argv[3];
+    char* tipo_grafo = argv[4]; 
 
     int start_index = nodo_inicial - 'a';
     int end_index = nodo_final - 'a';
+        
+    bool es_dirigido = false;
+    if (strcmp(tipo_grafo, "dirigido") == 0){
+        es_dirigido = true;
+    }
+    
+    matriz = leer_entrada(graph, false);
 
-    if (start_index < 0 || start_index >= MAX || end_index < 0 || end_index >= MAX) {
-        printf("Nodos inválidos\n");
+    if (start_index < 0 || start_index >= vertices || end_index < 0 || end_index >= vertices) {
+        printf("Error: Nodos inválidos. Los nodos para este grafo deben estar entre 'a' y '%c'.\n", 'a' + vertices - 1);
+        liberar_matriz();
         return 1;
     }
-
-    matriz = leer_entrada(graph);
+    
     if (!matriz) return 1;
 
     imprimir_matriz();
     dijkstra_alg(matriz, vertices, start_index, end_index);
-
     liberar_matriz();
+    
     return 0;
 }
