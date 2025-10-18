@@ -124,14 +124,21 @@ void dijkstra_alg(int** adjacency_matrix, int n, int start_node, int end_node){
         count++;
     }
 
-    if (distance[end_node] == INFINITY) {
-        printf("\nNo hay camino posible entre %c y %c.\n", 'a' + start_node, 'a' + end_node);
+    printf("\n.---------------------------------.\n");
+    printf("|    RESULTADOS DEL ALGORITMO     |\n");
+    printf("'---------------------------------'\n");
+    
+if (distance[end_node] == INFINITY) {
+        printf("> Status: No hay camino posible\n");
+        printf("> Entre:  %c y %c\n", 'a' + start_node, 'a' + end_node);
     } else {
-        printf("\nDistancia de %c a %c: %d\n", 'a' + start_node, 'a' + end_node, distance[end_node]);
+        printf("> Nodo Inicial:     %c\n", 'a' + start_node);
+        printf("> Nodo Final:       %c\n", 'a' + end_node);
+        printf("> Distancia Mínima: %d\n", distance[end_node]);
 
         int path[MAX];
         int path_index = 0;
-        j = end_node;
+        int j = end_node;
 
         while (j != start_node){
             path[path_index] = j;
@@ -140,13 +147,14 @@ void dijkstra_alg(int** adjacency_matrix, int n, int start_node, int end_node){
         }
         path[path_index] = start_node;
 
-        printf("Camino: ");
-        for (i = path_index; i >= 0; i--) {
+        printf("> Camino más corto: ");
+        for (int i = path_index; i >= 0; i--) {
             printf("%c", 'a' + path[i]);
             if (i > 0) {
                 printf(" -> ");
             }
         }
+        printf("\n");
         printf("\n");
     }
 }
@@ -171,6 +179,15 @@ int main(int argc, char* argv[]) {
     }
     
     matriz = leer_entrada(graph, es_dirigido);
+    if (!matriz) return 1;
+
+    printf("\n..:: ANALIZADOR DE GRAFOS CON DIJKSTRA ::..\n");
+    printf("=============================================\n");
+    printf("  Archivo de grafo : %s\n", graph);
+    printf("  Tipo de grafo    : %s\n", es_dirigido ? "Dirigido" : "No Dirigido");
+    printf("  Total de vértices: %d\n", vertices);
+    printf("  Buscando ruta de : %c -> %c\n", nodo_inicial, nodo_final);
+    printf("=============================================\n");
 
     if (start_index < 0 || start_index >= vertices || end_index < 0 || end_index >= vertices) {
         printf("Error: Nodos inválidos. Los nodos para este grafo deben estar entre 'a' y '%c'.\n", 'a' + vertices - 1);
@@ -178,9 +195,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     
-    if (!matriz) return 1;
 
-    imprimir_matriz();
     dijkstra_alg(matriz, vertices, start_index, end_index);
     liberar_matriz();
     
