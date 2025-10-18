@@ -170,7 +170,7 @@ int main(int argc, char* argv[]) {
         es_dirigido = true;
     }
     
-    matriz = leer_entrada(graph, false);
+    matriz = leer_entrada(graph, es_dirigido);
 
     if (start_index < 0 || start_index >= vertices || end_index < 0 || end_index >= vertices) {
         printf("Error: Nodos inválidos. Los nodos para este grafo deben estar entre 'a' y '%c'.\n", 'a' + vertices - 1);
