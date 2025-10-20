@@ -6,7 +6,7 @@ Este programa utiliza el algoritmo de Dijkstra para encontrar el camino más cor
 
 ### 1. Requisitos
 - Compilador `gcc`
-- Entorno tipo Unix (Linux, macOS, WSL)
+- Entorno tipo Unix (Linux, macOS, WSL) o Windows
 
 ### 2. Compilación
 Para compilar el programa, ejecuta el siguiente comando en tu terminal:
@@ -36,6 +36,20 @@ El programa se ejecuta con el siguiente formato:
 La salida del programa mostrará la distancia total del camino más corto y la secuencia de nodos que lo componen.
 
 ```Salida
-Distancia de a a e: 3
-Camino: a -> b -> c -> e
+..:: ANALIZADOR DE GRAFOS CON DIJKSTRA ::..
+=============================================
+  Archivo de grafo : grafos/input_graph.txt
+  Tipo de grafo    : No Dirigido
+  Total de vértices: 12
+  Buscando ruta de : a -> e
+=============================================
+
+.---------------------------------.
+|    RESULTADOS DEL ALGORITMO     |
+'---------------------------------'
+> Nodo Inicial:     a
+> Nodo Final:       e
+> Distancia Mínima: 2
+> Camino más corto: a -> c -> e
+
 ```
