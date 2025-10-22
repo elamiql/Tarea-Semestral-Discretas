@@ -28,7 +28,7 @@ El programa se ejecuta con el siguiente formato:
 ### Ejemplo concreto
 
 ```bash
-./path a e grafos/input_graph3.txt no_dirigido
+./path a e grafos/Arbol.txt no_dirigido
 ```
 
 ### Formato de Salida
@@ -38,7 +38,7 @@ La salida del programa mostrará la distancia total del camino más corto y la s
 ```Salida
 ..:: ANALIZADOR DE GRAFOS CON DIJKSTRA ::..
 =============================================
-  Archivo de grafo : grafos/input_graph.txt
+  Archivo de grafo : grafos/Arbol.txt
   Tipo de grafo    : No Dirigido
   Total de vértices: 12
   Buscando ruta de : a -> e
